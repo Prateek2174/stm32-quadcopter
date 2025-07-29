@@ -1,0 +1,7 @@
+../Core/Src/usart.c:25:6:usart_init	1
+../Core/Src/usart.c:43:6:usart_read	2
+../Core/Src/usart.c:51:6:usart_write	3
+../Core/Src/usart.c:58:6:usart_set_baudrate	1
+../Core/Src/usart.c:63:6:usart_general_init	5
+../Core/Src/usart.c:97:6:usart_general_read	2
+../Core/Src/usart.c:104:6:usart_general_write	3

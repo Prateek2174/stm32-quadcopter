@@ -1,0 +1,2 @@
+../Core/Src/gpio.c:16:6:gpio_init	1
+../Core/Src/gpio.c:55:6:gpio_general_init	12

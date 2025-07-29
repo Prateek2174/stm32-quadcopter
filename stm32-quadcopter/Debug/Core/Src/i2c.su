@@ -1,0 +1,16 @@
+../Core/Src/i2c.c:12:6:i2c_init	4	static
+../Core/Src/i2c.c:31:6:i2c_start	4	static
+../Core/Src/i2c.c:37:6:i2c_stop	4	static
+../Core/Src/i2c.c:42:6:i2c_transmit	24	static
+../Core/Src/i2c.c:67:6:i2c_read	24	static
+../Core/Src/i2c.c:107:6:i2c_write_reg	24	static
+../Core/Src/i2c.c:113:6:i2c_read_reg	16	static
+../Core/Src/i2c.c:144:6:i2c_set_bits	24	static
+../Core/Src/i2c.c:152:6:i2c_clear_bits	24	static
+../Core/Src/i2c.c:160:6:i2c_update_bitfield	32	static
+../Core/Src/i2c.c:169:6:i2c_general_init	16	static
+../Core/Src/i2c.c:198:6:i2c_general_start	16	static
+../Core/Src/i2c.c:204:6:i2c_general_stop	16	static
+../Core/Src/i2c.c:209:6:i2c_general_transmit	32	static
+../Core/Src/i2c.c:234:6:i2c_general_read	32	static
+../Core/Src/i2c.c:274:6:i2c_general_read_reg	24	static
