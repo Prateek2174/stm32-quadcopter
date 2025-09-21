@@ -154,7 +154,7 @@ float mpu6050_get_sample_rate(void){
 
 	float gyro_out_rate = 0;
 	uint8_t data;
-	i2c_read_reg(MPU6050_ADDR, MPU6050_CONFIG, &data);
+	i2c_read(MPU6050_ADDR, MPU6050_CONFIG, &data, 1);
 
 	if((data & 0x07) == 0 || (data & 0x07) == 7U){
 		gyro_out_rate = 8000.0f;
@@ -162,7 +162,7 @@ float mpu6050_get_sample_rate(void){
 		gyro_out_rate = 1000.0f;
 	}
 
-	i2c_read_reg(MPU6050_ADDR, MPU6050_SMPLRT_DIV, &data);
+	i2c_read(MPU6050_ADDR, MPU6050_SMPLRT_DIV, &data, 1);
 
 	float sample_rate = gyro_out_rate / (1 + data);
 	return sample_rate;
@@ -311,11 +311,9 @@ void mpu6050_temp_read(MPU6050_data *data){
 		return;
 	}
 
-	uint8_t low, high;
-	i2c_read_reg(MPU6050_ADDR, MPU6050_FIFO_R_W, &high);
-	i2c_read_reg(MPU6050_ADDR, MPU6050_FIFO_R_W, &low);
-
-	data->temp = (((int16_t)((high << 8) | low))/340 + 36.53);
+	uint8_t buffer[2];
+	i2c_read(MPU6050_ADDR, MPU6050_FIFO_R_W, buffer, 2);
+	data->temp = (((int16_t)((buffer[0] << 8) | buffer[1]))/340 + 36.53);
 
 	//Disable FIFO for temp
 	i2c_clear_bits(MPU6050_ADDR, MPU6050_FIFO_EN, TEMP_FIFO_EN);
@@ -383,11 +381,7 @@ void mpu6050_read_all(MPU6050_data *data){
 	}
 
 	uint8_t buffer[14];
-
-	for(int i = 0; i < 14; i++){
-
-		i2c_read_reg(MPU6050_ADDR, MPU6050_FIFO_R_W, &buffer[i]);
-	}
+	i2c_read(MPU6050_ADDR, MPU6050_FIFO_R_W, buffer, 14);
 
 	data -> accel_x = (int16_t)((buffer[0] << 8) | buffer[1]);
 	data -> accel_y = (int16_t)((buffer[2] << 8) | buffer[3]);

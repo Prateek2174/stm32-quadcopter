@@ -64,7 +64,20 @@ void i2c_transmit(uint8_t address, uint8_t *data, uint16_t length){
 	i2c_stop();
 }
 
-void i2c_read(uint8_t address, uint8_t *data, uint16_t length){
+void i2c_read(uint8_t device_address, uint8_t register_address, uint8_t *data, uint16_t length){
+
+	i2c_start();
+
+	I2C1 -> DR = (device_address << 1) | 0;
+	while(!(I2C1 -> SR1 & I2C_SR1_ADDR));
+	(void)I2C1 -> SR1;
+	(void)I2C1 -> SR2;
+
+	while(!(I2C1 -> SR1 & I2C_SR1_TXE));
+	I2C1 -> DR = register_address;
+
+	while(!(I2C1 -> SR1 & I2C_SR1_BTF));
+	while(!(I2C1 -> SR1 & I2C_SR1_TXE));
 
 	i2c_start();
 
@@ -72,20 +85,21 @@ void i2c_read(uint8_t address, uint8_t *data, uint16_t length){
 	//before the ADDR flag is cleared and the STOP condition generation is made after
 	if(length == 1){
 
-		I2C1 -> DR = (address << 1) | 1;
+		I2C1 -> DR = (device_address << 1) | 1;
 		I2C1 -> CR1 &= ~I2C_CR1_ACK;
+
 		while(!(I2C1 -> SR1 & I2C_SR1_ADDR));
 		(void)I2C1 -> SR1;
 		(void)I2C1 -> SR2;
 		i2c_stop();
-		//while(!(I2C1 -> SR1 & I2C_SR1_RXNE)); <-- Not Sure
+		while(!(I2C1 -> SR1 & I2C_SR1_RXNE)); //<-- Not Sure
 		data[0] = I2C1 -> DR;
 
 		return;
 	}
 
 	I2C1 -> CR1 |= I2C_CR1_ACK;
-	I2C1 -> DR = (address << 1) | 1;
+	I2C1 -> DR = (device_address << 1) | 1;
 	while(!(I2C1 -> SR1 & I2C_SR1_ADDR));
 	(void)I2C1 -> SR1;
 	(void)I2C1 -> SR2;
@@ -144,7 +158,7 @@ void i2c_read_reg(uint8_t device_address, uint8_t register_address, uint8_t *dat
 void i2c_set_bits(uint8_t device_address, uint8_t register_address, uint8_t data){
 
 	uint8_t reg = 0;
-	i2c_read_reg(device_address, register_address, &reg);
+	i2c_read(device_address, register_address, &reg, 1);
 	reg |= data;
 	i2c_write_reg(device_address, register_address, reg);
 }
@@ -152,7 +166,7 @@ void i2c_set_bits(uint8_t device_address, uint8_t register_address, uint8_t data
 void i2c_clear_bits(uint8_t device_address, uint8_t register_address, uint8_t data){
 
 	uint8_t reg = 0;
-	i2c_read_reg(device_address, register_address, &reg);
+	i2c_read(device_address, register_address, &reg, 1);
 	reg &= ~data;
 	i2c_write_reg(device_address, register_address, reg);
 }
@@ -160,7 +174,7 @@ void i2c_clear_bits(uint8_t device_address, uint8_t register_address, uint8_t da
 void i2c_update_bitfield(uint8_t device_address, uint8_t register_address,uint8_t mask, uint8_t data){
 
 	uint8_t reg = 0;
-	i2c_read_reg(device_address, register_address, &reg);
+	i2c_read(device_address, register_address, &reg, 1);
 	reg &= ~mask;
 	reg |= (mask & data);
 	i2c_write_reg(device_address, register_address, reg);
