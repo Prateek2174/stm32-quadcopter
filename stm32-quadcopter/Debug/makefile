@@ -34,34 +34,34 @@ $(wildcard ../makefile.init) \
 $(wildcard ../makefile.targets) \
 
 
-BUILD_ARTIFACT_NAME := quadcopter
+BUILD_ARTIFACT_NAME := stm32-quadcopter
 BUILD_ARTIFACT_EXTENSION := elf
 BUILD_ARTIFACT_PREFIX :=
 BUILD_ARTIFACT := $(BUILD_ARTIFACT_PREFIX)$(BUILD_ARTIFACT_NAME)$(if $(BUILD_ARTIFACT_EXTENSION),.$(BUILD_ARTIFACT_EXTENSION),)
 
 # Add inputs and outputs from these tool invocations to the build variables 
 EXECUTABLES += \
-quadcopter.elf \
+stm32-quadcopter.elf \
 
 MAP_FILES += \
-quadcopter.map \
+stm32-quadcopter.map \
 
 SIZE_OUTPUT += \
 default.size.stdout \
 
 OBJDUMP_LIST += \
-quadcopter.list \
+stm32-quadcopter.list \
 
 
 # All Target
 all: main-build
 
 # Main-build Target
-main-build: quadcopter.elf secondary-outputs
+main-build: stm32-quadcopter.elf secondary-outputs
 
 # Tool invocations
-quadcopter.elf quadcopter.map: $(OBJS) $(USER_OBJS) C:\Users\prate\STM32CubeIDE\workspace_1.18.1\quadcopter\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "quadcopter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\prate\STM32CubeIDE\workspace_1.18.1\quadcopter\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="quadcopter.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+stm32-quadcopter.elf stm32-quadcopter.map: $(OBJS) $(USER_OBJS) C:\Users\prate\git\stm32-quadcopter\stm32-quadcopter\STM32F446RETX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "stm32-quadcopter.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\Users\prate\git\stm32-quadcopter\stm32-quadcopter\STM32F446RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="stm32-quadcopter.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -70,14 +70,14 @@ default.size.stdout: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
-quadcopter.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "quadcopter.list"
+stm32-quadcopter.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objdump -h -S $(EXECUTABLES) > "stm32-quadcopter.list"
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) default.size.stdout quadcopter.elf quadcopter.list quadcopter.map
+	-$(RM) default.size.stdout stm32-quadcopter.elf stm32-quadcopter.list stm32-quadcopter.map
 	-@echo ' '
 
 secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
