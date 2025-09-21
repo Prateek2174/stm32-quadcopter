@@ -14,6 +14,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#define LIS3MDL_ADDR 0x1E
+
 //CTRL_REGX
 #define TEMP_EN  (1U << 7)
 #define OM(mode) (mode << 5)
@@ -65,4 +67,69 @@
 #define MROI  (1U << 1)
 #define INT   (1U << 0)
 
-//Function Prototypes
+void lis3mdl_init(void){
+
+	//Check WHO_AM_I to make sure device is working correctly
+	uint8_t who_am_i;
+	i2c_read_reg(LIS3MDL_ADDR, WHO_AM_I, &who_am_i);
+	if(who_am_i != 0x3D){
+
+	}
+
+	//Configure XYZ performance mode
+	lismdl_high_performance_mode();
+
+	//Set sampling rate to 80 Hz
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG1, DO_MASK, DO(7));
+
+	//Enable temperature sensor if necessary
+
+	//Configure full-scale selection to +- 4 gauss
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG2, FS_MASK, FS(0));
+
+	//Enable continuous conversion mode
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG3, MD_MASK, MD(0));
+
+	//Set BDU to get updates in blocks
+
+	//Configure interrupts
+}
+
+void lis3mdl_low_performance_mode(void){
+	//set OM and OMZ
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG1, OM_MASK, OM(0));
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG4, OMZ_MASK, OMZ(0));
+
+}
+
+void lis3mdl_medium_performance_mode(void){
+
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG1, OM_MASK, OM(1));
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG4, OMZ_MASK, OMZ(1));
+}
+
+void lis3mdl_high_performance_mode(void){
+
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG1, OM_MASK, OM(2));
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG4, OMZ_MASK, OMZ(2));
+}
+
+void lis3mdl_ultra_high_performance_mode(void){
+
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG1, OM_MASK, OM(3));
+	i2c_update_bitfield(LIS3MDL_ADDR, CTRL_REG4, OMZ_MASK, OMZ(3));
+}
+
+void lis3mdl_read(LIS3MDL_data *data){
+
+	uint8_t status;
+
+	do{
+
+		i2c_read(LIS3MDL_ADDR, STATUS_REG, &status, 1);
+
+	}while((status & ZYXDA) != ZYXDA);
+
+
+}
+

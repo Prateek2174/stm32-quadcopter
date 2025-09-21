@@ -10,6 +10,15 @@
 
 #include <stdbool.h>
 
+typedef struct{
+	int16_t x;
+	int16_t y;
+	int16_t z;
+
+	int16_t temp;
+
+}LIS3MDL_data;
+
 #define OFFSET_X_REG_L_M 0x05
 #define OFFSET_X_REG_H_M 0x06
 #define OFFSET_Y_REG_L_M 0x07
@@ -42,5 +51,18 @@
 
 #define INT_THS_L 0x32
 #define INT_THS_H 0x33
+
+//Function Prototypes
+void lis3mdl_init(void);
+
+void lis3mdl_low_performance_mode(void);
+void lis3mdl_medium_performance_mode(void);
+void lis3mdl_high_performance_mode(void);
+void lis3mdl_ultra_high_performance_mode(void);
+
+void lis3mdl_temp_sensor_enable(void);
+
+void lis3mdl_read(LIS3MDL_data *data);
+
 
 #endif /* INC_LIS3MDL_H_ */
